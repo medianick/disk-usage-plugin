@@ -324,10 +324,10 @@ public class DiskUsageUtil {
             //count build.xml too
             build.save();
             DiskUsagePlugin plugin = Jenkins.getInstance().getPlugin(DiskUsagePlugin.class);
-            listener.getLogger().println("Started calculate disk usage of build");
+            listener.getLogger().println("Started calculation of disk usage for build");
             Long startTimeOfBuildCalculation = System.currentTimeMillis();
                 DiskUsageUtil.calculateDiskUsageForBuild(build.getId(), build.getProject());
-                listener.getLogger().println("Finished Calculation of disk usage of build in " + DiskUsageUtil.formatTimeInMilisec(System.currentTimeMillis() - startTimeOfBuildCalculation));
+                listener.getLogger().println("Finished calculation of disk usage for build in " + DiskUsageUtil.formatTimeInMilisec(System.currentTimeMillis() - startTimeOfBuildCalculation));
                 DiskUsageProperty property = getDiskUsageProperty(build.getProject());
                 if(build.getWorkspace()!=null){
                     ArrayList<FilePath> exceededFiles = new ArrayList<FilePath>();
@@ -347,10 +347,10 @@ public class DiskUsageUtil {
                         }
                     }
                     property.checkWorkspaces();
-                    listener.getLogger().println("Started calculate disk usage of workspace");
+                    listener.getLogger().println("Started calculation of disk usage for workspace");
                     Long startTimeOfWorkspaceCalculation = System.currentTimeMillis();
                     Long size = DiskUsageUtil.calculateWorkspaceDiskUsageForPath(build.getWorkspace(),exceededFiles);
-                    listener.getLogger().println("Finished Calculation of disk usage of workspace in " + DiskUsageUtil.formatTimeInMilisec(System.currentTimeMillis() - startTimeOfWorkspaceCalculation));
+                    listener.getLogger().println("Finished calculation of disk usage for workspace in " + DiskUsageUtil.formatTimeInMilisec(System.currentTimeMillis() - startTimeOfWorkspaceCalculation));
                     property.putSlaveWorkspaceSize(build.getBuiltOn(), build.getWorkspace().getRemote(), size);
                     property.saveDiskUsage();
                     DiskUsageUtil.controlWorkspaceExceedSize(project);
@@ -358,8 +358,8 @@ public class DiskUsageUtil {
                 }
             }
             catch(Exception ex){
-                listener.getLogger().println("Disk usage plugin fails during calculation disk usage of this build.");
-                    Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage plugin fails during build calculation disk space of job " + build.getParent().getDisplayName(), ex);
+                listener.getLogger().println("Disk usage plugin failed during calculation of disk usage for this build.");
+                    Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage plugin failed during calculation of disk usage for job " + build.getParent().getDisplayName(), ex);
             }
     }
     
@@ -478,7 +478,7 @@ public class DiskUsageUtil {
             try {
                 sendEmail("Job " + project.getDisplayName() + " exceeds size", "Job " + project.getDisplayName() + " has size " + getSizeString(buildSize) + ".");
             } catch (MessagingException ex) {
-                Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage plugin can not send notification about exceeting job size.", ex);
+                Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage plugin cannot send notification about exceeding job size.", ex);
             }
                 }
         if (update) {
@@ -540,7 +540,7 @@ public class DiskUsageUtil {
             try {
                 sendEmail("Build with id " + information.getNumber() + " of project " + project.getDisplayName() + " exceeds size", "Build with id " + information.getNumber() + " of project " + project.getDisplayName() + " has size " + getSizeString(buildSize) + ".");
             } catch (MessagingException ex) {
-                Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage plugin can not send notification about exceeting build size.", ex);
+                Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage plugin cannot send notification about exceeding build size.", ex);
             }
         }
     }
@@ -552,7 +552,7 @@ public class DiskUsageUtil {
                 diskUsage = workspace.getChannel().callAsync(new DiskUsageCallable(workspace, exceeded)).get(Jenkins.getInstance().getPlugin(DiskUsagePlugin.class).getConfiguration().getTimeoutWorkspace(), TimeUnit.MINUTES);             
             }
             catch(Exception e){
-                Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage fails to calculate workspace for file path " + workspace.getRemote() + " through channel " + workspace.getChannel(),e);
+                Logger.getLogger(DiskUsageUtil.class.getName()).log(Level.WARNING, "Disk usage failed to calculate workspace for file path " + workspace.getRemote() + " through channel " + workspace.getChannel(),e);
             }
         }
         return diskUsage;
